@@ -1,0 +1,12 @@
+function [enf, time] = audioenf(y,fs,framelength, overlap,nfft, filtern, f0_norm, bw_norm)
+
+% specstring = [N, F0, BW/Q, AP, AST]
+% N - order, F0 - centre freq, BW - bandwidth, 
+%AP - passband ripple, AST - stopband attenu (these two are optional args)
+
+D = fdesign.peak('N,F0,BW', filtern,f0_norm, bw_norm);
+H = design(D);
+x = filter(H, y);
+[enf, time] = extractenf(x,fs,framelength, overlap, nfft);
+
+end
