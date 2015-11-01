@@ -1,0 +1,26 @@
+function [enf] = audioenfperiodogram(y,fs,framelength, overlap, nfft, filtern, f0_norm, bw_norm)
+
+%create and filter the signal
+D = fdesign.peak('N,F0,BW', filtern,f0_norm, bw_norm);
+H = design(D);
+x = filter(H, y);
+
+% start of each frame = i*framese+1;
+framesep = framelength - overlap;
+i = 0;
+j = 1;
+enf = 0;
+window = zeros(0,0);
+
+%if the start and end of the fram exist (i.e. not overflow), take
+%periodogram of that frame and store your enf.
+while ((i*framesep)+ framelength) < length(x)
+    pxx = periodogram(x(i*framesep+1:i*framesep+framelength),window,nfft);
+    index = find(pxx == max(pxx));
+    enf(j) = (index/length(pxx))*(fs/2);
+    i = i+1;
+    j = j+1;  
+end
+plot(enf);
+
+end
