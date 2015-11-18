@@ -44,7 +44,10 @@ for n=1:length(file_list)
     wt_var = find_wt_var(enf_off, wt_var);
     
     %(Index 8-10) AR parameters, error variance
-    [ar_para,ar_err] = find_ar(enf_off, ar_para, ar_err);
+    [a,g] = lpc(enf_off,2);
+    ar_para = [ar_para; a(:,2:end)];
+    g = log(g);
+    ar_err = [ar_err; g];
    
     if nargin == 3
         % create label vector

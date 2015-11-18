@@ -4,8 +4,8 @@
 % Fs = 1000;
 
 %locate the file for training 
-path = 'Train_Data';
-grid_num = ['A' 'C'];
+path = fullfile('..','Train_Data');
+grid_num = 'A';
 record_type = 'P';
 record_num = 'all';
 [file_list_train, label_train] = list_files(path,grid_num,record_type,record_num);

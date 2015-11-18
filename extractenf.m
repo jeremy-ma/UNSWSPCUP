@@ -30,17 +30,6 @@ else
 end
     
 
-% fnom = freqaxis(find(x==max(x)));
-% % if round(fnom, 1, 'significant') == 60 %rounded to 1 significant figure
-% if round(fnom) == 60 %rounded to 1 significant figure
-%     fnom = 60;
-% % elseif round(fnom, 1, 'significant') == 50
-% elseif round(fnom) == 50
-%     fnom = 50;
-% else 
-%     error('Nominal Frequency not as expected. Fnom is %d', fnom)
-% end
-
 %Generate the spectrogram of the signal.
 %s is the STFT matrix (time inc. across columns, frequency inc. down rows)
 %f is the frequencies vector. Resolution = (nfft/2)+1
@@ -65,6 +54,6 @@ for j=1:length(f)
         end
     end
 end
-plot(time,enf);
-xlabel('Time(sec)');
-ylabel('Frequency(Hz)');
+% plot(time,enf);
+% xlabel('Time(sec)');
+% ylabel('Frequency(Hz)');
