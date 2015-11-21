@@ -1,6 +1,6 @@
 %SVM
 % 15% data is held up for testing
-function svm_train(train_data,Y,test_data,Y_test)
+function [prob_m, accuracy]=svm_train(train_data,Y,test_data,Y_test)
 %Y_test exsit only if we know the ground truth of testing data
     
     %normalise vector to [-100,100]

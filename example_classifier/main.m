@@ -5,8 +5,8 @@
 
 %locate the file for training 
 
-orig_dir = fullfile('..','Training_Data150901');
-path = 'data';
+orig_dir = fullfile('..','..','Training_Data150901');
+path = fullfile('..','..','data');
 grid_num = 'all';
 record_type = 'P';
 record_num = 'all';
@@ -26,4 +26,4 @@ change_dir(orig_dir, path);
 
 
 %SVM
-svm_train(features_train,label_concat)
+[prob_m, accuracy] = svm_train(features_train,label_concat);
