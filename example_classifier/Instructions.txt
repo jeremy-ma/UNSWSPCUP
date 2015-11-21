@@ -3,7 +3,7 @@ README - updated 2015-11-21
 Features
 1. ENF extraction (modified from Andrew Xie's code)
 2. features extraction. Includes all 10 features
-3. SVM, with 15% of data held up as testing set
+3. SVM, with k-fold validation
 
 System requirement
 1. Update MAATLAB to 2014b or later version
@@ -11,8 +11,9 @@ System requirement
 Execution instruction
 1. Open main.m
 2. config the following parameters
-	target_dir: directory
+	orig_dir: current location of your data
 	path: directory where your data will be located. This program copies all the .wav files into a simple folder structure
+	store_fig: directory where the output figures and tables will be stored.
 	grid_num: the grids you want to extract. If grid A & C is interested, type 'AC'. If all 9 grids are interested, type 'all'
 	record_type: extract Power ('P') or Audio ('A') signal. If both are interested, type 'all'.
 	record_num: select which sample file to extract from. If all sample files are interested, type 'all'
