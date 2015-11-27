@@ -1,14 +1,11 @@
-%declare global variables
-% global Fs   %sampling frequency
-
-% Fs = 1000;
+%declare variables
 
 %locate the file for training 
 orig_dir = fullfile('..','..','Training_Data150901');
 path = fullfile('..','..','data');
 store_fig = fullfile('..','..','figures');
 
-grid_num = 'all';
+grid_num = 'AC';
 record_type = 'P';
 record_num = 'all';
 
