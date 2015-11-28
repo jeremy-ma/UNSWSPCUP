@@ -13,20 +13,22 @@ function [file_list, label] = list_files(path,grid_num,record_type,record_num)
     list_full = dir(path);
     
 
-    reg_str_part = ['_' '[' record_type ']' '[' num2str(record_num) ']' '.wav'];
+    reg_str_part = [ '[' num2str(record_num) ']' '.wav'];
     
     file_list = {};
     label = [];
     sample_num = 0;
-    % which grid
-    for i=1:length(grid_num)
-        reg_str = [grid_num(i) reg_str_part];
-        % check with each filename in the directory
-        for j=3:length(list_full)
-            if ~isempty(regexp(list_full(j).name,reg_str,'match'))
-                sample_num = sample_num +1;
-                file_list{sample_num,1} =  list_full(j).name;
-                label = [label; grid_num(i)];
+    for k=1:length(record_type)
+        % which grid
+        for i=1:length(grid_num)
+            reg_str = [grid_num(i) '_' record_type(k) reg_str_part];
+            % check with each filename in the directory
+            for j=3:length(list_full)
+                if ~isempty(regexp(list_full(j).name,reg_str,'match'))
+                    sample_num = sample_num +1;
+                    file_list{sample_num,1} =  list_full(j).name;
+                    label = [label; [record_type(k) grid_num(i)]];
+                end
             end
         end
     end
