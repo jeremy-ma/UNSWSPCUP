@@ -24,7 +24,7 @@ features_weight = ones(1,features_num);        %assign weight to different featu
 change_dir(orig_dir, path_train, store_fig);
 
 %train data
-[file_list_train, label_train] = list_files(path_train,grid_num,record_type,record_num);
+[file_list_train, file_tab_train, label_train] = list_files(path_train,grid_num,record_type,record_num);
 % [features_train,label_concat] = features_extract(path_train, file_list_train, label_train, frame_size, overlap_enf, nfft, seg_size, overlap_seg);
 train_data = FeaturesExtractClass(frame_size, overlap_enf, nfft, seg_size, overlap_seg);
 train_data = train_data.features_extract(path_train, file_list_train);
@@ -32,16 +32,20 @@ train_data = train_data.labelling(label_train);
 
 % [norm_train,grad,intercept] = feature_norm(features_train);
 scale_coeff = FeaturesNormClass(train_data.features,features_weight);
-train_norm = scale_coeff.scaletest(train_data.features);
+train_data.features_norm = scale_coeff.scaletest(train_data.features);
 
 %test data
-[file_list_test,file_num] = list_files_test(path_test);
+[file_list_test,num_test] = list_files_test(path_test);
 test_data = FeaturesExtractClass(frame_size, overlap_enf, nfft, seg_size, overlap_seg);
 test_data = test_data.features_extract(path_test, file_list_test);
 
 
-test_norm = scale_coeff.scaletest(test_data.features);
+test_data.features_norm = scale_coeff.scaletest(test_data.features);
 
-
+train_w = 0.7;
+valid_w = 0.3;
+test_w = 0;
+obj = AbstractML();
+obj.split_data(train_data,file_tab_train,train_w,valid_w,test_w);
 %SVM
-[prob_m, accuracy] = svm_train(train_norm,label_concat,kfold,store_fig);
+% [prob_m, accuracy] = svm_train(train_norm,label_concat,kfold,store_fig);

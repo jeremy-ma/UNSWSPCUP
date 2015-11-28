@@ -8,6 +8,7 @@ properties
     overlap_seg = 0;
 
     features
+    features_norm
     seg_num
     label_concat
 end
