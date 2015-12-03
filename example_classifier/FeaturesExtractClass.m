@@ -11,6 +11,7 @@ properties
     features_norm
     seg_num
     label_concat
+    label_file
 end
 
 methods
@@ -49,7 +50,7 @@ methods
             obj.features = feature_extract(obj.features, enf_reshape, obj.seg_size);
 
             %record number of segments 
-            obj.seg_num = [obj.seg_num size(enf_reshape,1)];
+            obj.seg_num = [obj.seg_num; size(enf_reshape,1)];
         end
     end
     
@@ -57,6 +58,7 @@ methods
     function obj = labelling(obj, label)
 %         label_concat = repelem(label,obj.seg_num);
         for i=1:length(label)
+            obj.label_file = [obj.label_file; label(i,:)];
             obj.label_concat = [obj.label_concat; repmat(label(i,:),obj.seg_num(i),1)];
         end
     end

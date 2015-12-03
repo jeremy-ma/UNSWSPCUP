@@ -7,13 +7,15 @@ function [file_list, file_tab, label] = list_files(path,grid_num,record_type,rec
         record_type = 'AP';
     end
     if strcmp(record_num,'all')
-        record_num = '\d*';
+        reg_str_part = '\d*.wav';
+    else
+        reg_str_part = [ '[' num2str(record_num) ']' '.wav'];
     end
     
     list_full = dir(path);
     
 
-    reg_str_part = [ '[' num2str(record_num) ']' '.wav'];
+%     reg_str_part = [ '[' num2str(record_num) ']' '.wav'];
     
     file_list = {};
     label = [];
@@ -28,7 +30,7 @@ function [file_list, file_tab, label] = list_files(path,grid_num,record_type,rec
                 if ~isempty(regexp(list_full(j).name,reg_str,'match'))
                     sample_num = sample_num +1;
                     file_list{sample_num,1} =  list_full(j).name;
-                    num = cell2mat(regexp(list_full(j).name,'\d*','match'));
+                    num = num2str(str2double(regexp(list_full(j).name,'\d*','match')),'%02i');
                     label = [label; [record_type(k) grid_num(i) num]];
                     file_tab(grid_num(i)-'A'+1,k) = file_tab(grid_num(i)-'A'+1,k)+1;
                 end
