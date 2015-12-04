@@ -1,6 +1,6 @@
 %declare variables
 
-%locate the file for training 
+%location of directories
 orig_dir = fullfile('..','..','Training_Data150901');
 path_train = fullfile('..','..','data');
 path_test = fullfile('..','..','Practice_dataset','Practice_dataset');
@@ -17,10 +17,9 @@ nfft = 2^14;          %nfft parameter when applying spectrogram, default 2^14
 seg_size = 96;      %segment size in number of ENF points, default 96
 overlap_seg = 0;   %overlap between segments, default 0
 
-features_num = 10;  
-features_weight = ones(1,features_num);        %assign weight to different features (size = 1 x feature_size, eg 1x10)
-
-train_w = 0.7;
+features_num = 10;  %number of ENF features
+features_weight = ones(1,features_num); %assign weight to different features (size = 1 x feature_size, eg 1x10)
+train_w = 0.7;  %fraction of data put into training
 valid_w = 0.3;
 %%
 change_dir(orig_dir, path_train, store_fig);
