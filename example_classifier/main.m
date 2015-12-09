@@ -20,7 +20,6 @@ overlap_seg = 0;   %overlap between segments, default 0
 features_num = 10;  %number of ENF features
 features_weight = ones(1,features_num); %assign weight to different features (size = 1 x feature_size, eg 1x10)
 train_w = 0.7;  %fraction of data put into training
-valid_w = 0.3;
 %%
 change_dir(orig_dir, path_train, store_fig);
 
@@ -29,11 +28,13 @@ change_dir(orig_dir, path_train, store_fig);
 [file_list_test,num_test] = list_files_test(path_test);
 
 %ENF extraction + feature extraction
+enf_p_algo = @extractenf;     %function handle for ENF extraction 
+enf_a_algo = @extractenf;     %function handle for ENF extraction 
 train_data = FeaturesExtractClass(frame_size, overlap_enf, nfft, seg_size, overlap_seg);
-train_data = train_data.features_extract(path_train, file_list_train);
+train_data = train_data.features_extract(enf_p_algo,enf_a_algo,path_train, file_list_train);
 train_data = train_data.labelling(file_label_train);
 test_data = FeaturesExtractClass(frame_size, overlap_enf, nfft, seg_size, overlap_seg);
-test_data = test_data.features_extract(path_test, file_list_test);
+test_data = test_data.features_extract(enf_p_algo,enf_a_algo,path_test, file_list_test);
 test_data = test_data.labelling(num2str(num_test,'%02i'));
 
 %Features normalisation
@@ -45,4 +46,4 @@ test_data.features_norm = scale_coeff.scaletest(test_data.features);
 
 class_algo = {@SVMClass};
 store_text = {'SVM'};
-classification(class_algo,store_text,train_data,train_w,valid_w,test_data,store_fig);
+store_label = classification(class_algo,store_text,train_data,train_w,test_data,store_fig);

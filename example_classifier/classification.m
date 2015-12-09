@@ -1,6 +1,6 @@
 %Input: algo - cell array of classification algorithms
 %       store - array of texts (same length as algo) which helps when storing figures
-function classification(algo,store_text,train_data,train_w,valid_w,test_data,store_fig)
+function store_label = classification(algo,store_text,train_data,train_w,test_data,store_fig)
 
 %     algo = {@SVMClass @SVMClass};
     trials = 1; %number of runs and tunes before testing it on actual test data
@@ -10,7 +10,7 @@ function classification(algo,store_text,train_data,train_w,valid_w,test_data,sto
         MdlObj = func_handle();
         
         for j=1:trials
-            MdlObj = MdlObj.split_data(train_data,train_w,valid_w);
+            MdlObj = MdlObj.split_data(train_data,train_w);
             MdlObj = MdlObj.training(MdlObj.train_data, MdlObj.train_label);
             [pred_label,score] = MdlObj.testing(MdlObj.valid_data);
             [merge_label, conf_prob_merge] = MdlObj.merge_seg(pred_label, score, MdlObj.valid_tag);

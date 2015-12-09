@@ -32,8 +32,7 @@ methods
     end
     
     % split_data into train/validation/test set
-    % so far, assume test_w=0
-    function obj = split_data(obj,data,train_w,valid_w)
+    function obj = split_data(obj,data,train_w)
 %         if train_w + valid_w + test_w ~=1
 %             error('train, validation & test data splitting weight should add up to 1')
 %         end

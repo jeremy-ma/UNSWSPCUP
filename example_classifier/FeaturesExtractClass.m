@@ -35,14 +35,14 @@ methods
     end
 
     %iterate through each file to get ENF, then features
-    function obj = features_extract(obj, path, file_list)
+    function obj = features_extract(obj, enf_p_algo, path, file_list)
         for n=1:length(file_list)
 
             [y,fs] = load_file(path, char(file_list(n)));
 
             %spectrogram
             framelength = obj.frame_size * fs;
-            [enf, time] = extractenf(y, fs, framelength, obj.overlap_enf, obj.nfft);
+            [enf, time] = enf_p_algo(y, fs, framelength, obj.overlap_enf, obj.nfft);
 
             %reshape enf in segments
             enf_reshape = reshape_vec(enf, obj.seg_size, obj.overlap_seg);
