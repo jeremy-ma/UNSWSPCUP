@@ -1,8 +1,8 @@
 classdef SVMClass < AbstractMLClass
     
 methods
-    function obj = training(obj)
-        obj.Mdl = fitcecoc(obj.train_data,obj.train_label,'FitPosterior',1);
+    function obj = training(obj,train_data,train_label)
+        obj.Mdl = fitcecoc(train_data,train_label,'FitPosterior',1);
     end
     
     function [pred_label,score] = testing(obj, test_data)
