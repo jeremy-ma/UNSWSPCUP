@@ -1,0 +1,48 @@
+
+%**************************************************************************
+% Inputs: [y, fs, framelength, overlap, win_len]
+% Outputs: [enf, time]
+%**************************************************************************
+
+function [enf, time] = MUSIC_ENF(y, fs, framelength, overlap, win_len)
+
+   [B,A] = butter(6,[48.5 52.4]/(fs/2));
+   y = filter(B, A, y);
+
+%split up signal into overlapping frames
+%each column of seg is a different frame
+seg = buffer(y, framelength, overlap);
+
+length(seg)
+enf = [];
+time = [];
+
+i = 1;
+
+%loops through and for each column (frame)
+while (i < size(seg,2))
+    
+    temp = seg(:,i);
+    
+    corr = corrmtx(seg(:,i),12,'mod');
+    [W,P] = rootmusic(corr, 2);
+    
+    %convert from
+    W = (W*fs)/(2*pi);
+    
+    enf = [enf, W(1)];
+    time = [time, (framelength*(i-0.5))/fs];
+    
+    i = i +1;
+end
+
+
+plot(time,enf);
+
+xlabel('Time(sec)');
+ylabel('Frequency(Hz)');
+
+
+
+
+end
