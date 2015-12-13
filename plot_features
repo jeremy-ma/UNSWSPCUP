@@ -1,0 +1,79 @@
+%% characterising the data
+% run plot_features(train_data.features,train_data.label_concat) on matlab
+function plot_features(train_data_features,train_data_label_concat) %input matrix with train data features and label 
+grid = train_data_features;
+grid(:,11:14) = train_data_label_concat; %12th column is 65 - 73 A to I
+A = 65;
+temp = zeros(9,10); % 9 = A to I, 10 features
+counter = 66;
+repeat = 0;
+    for i = 1:length(grid(:,1))
+        if grid(i,12) == counter - 1
+            temp(counter-A,:) = temp(counter-A,:) + train_data_features(i,:);
+            repeat = repeat + 1;
+        else
+            temp(counter-A,:) = temp(counter-A,:)/repeat;
+            repeat = 0;
+            counter = counter + 1;
+            temp(counter-A,:) = temp(counter-A,:) + train_data_features(i,:);     
+        end
+
+        if i == length(grid(:,1))
+            temp(counter-A,:) = temp(counter-A,:)/repeat;
+        end
+    end
+    figure(1);
+    subplot(3,1,1);
+    plot(temp(:,1));
+    title('feature 1');
+    xlabel('A-I');
+    ylabel('Hz');
+    subplot(3,1,2);    
+    plot(temp(:,2));
+    title('feature 2');
+    xlabel('A-I');    
+    ylabel('log(variance)');
+    subplot(3,1,3);    
+    plot(temp(:,3));
+    title('feature 3');
+    xlabel('A-I');
+    ylabel('log(range)');
+    
+    figure(2);
+    subplot(2,4,1);
+    plot(temp(:,4));
+    title('feature 4');
+    xlabel('A-I');
+    ylabel('log(variance) wavlet');
+    subplot(2,4,2);    
+    plot(temp(:,5));
+    title('feature 5');
+    xlabel('A-I');
+    ylabel('log(variance) wavlet');
+    subplot(2,4,3);    
+    plot(temp(:,6));
+    title('feature 6');
+    xlabel('A-I');
+    ylabel('log(variance) wavlet');
+    subplot(2,4,4);
+    plot(temp(:,7));
+    title('feature 7');
+    xlabel('A-I');
+    ylabel('log(variance) wavlet');
+    subplot(2,4,5);    
+    plot(temp(:,8));
+    title('feature 8');
+    xlabel('A-I');
+    ylabel('log(variance) auto regression ');
+    subplot(2,4,6);    
+    plot(temp(:,9));
+    title('feature 9');
+    xlabel('A-I');
+    ylabel('log(variance) auto regression ');
+    subplot(2,4,7);
+    plot(temp(:,10));
+    xlabel('A-I');
+    ylabel('log(variance) auto regression ');
+    title('feature 10');
+  
+end
