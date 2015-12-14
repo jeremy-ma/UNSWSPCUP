@@ -1,9 +1,9 @@
-function [ featureMatrix, gridLabels, recordingTypes ] = segmentENFAndExtractFeatures(ENFSignals, featureExtractors, segmentSize)
+function [ featureMatrix, gridLabels, recordingTypes, fileNames ] = segmentENFAndExtractFeatures(ENFSignals, featureExtractors, segmentSize)
 
 featureMatrix = [];
 gridLabels = [];
 recordingTypes = [];
-
+fileNames = {};
 for ii=1:length(ENFSignals)
     for jj=1:segmentSize:length(ENFSignals(ii).enf)
         if (jj+segmentSize-1) > length(ENFSignals(ii).enf)
@@ -22,6 +22,7 @@ for ii=1:length(ENFSignals)
         featureMatrix = [featureMatrix; featureVector];
         gridLabels = [gridLabels; ENFSignals(ii).gridID];
         recordingTypes = [recordingTypes; ENFSignals(ii).recordingType];
+        fileNames = {fileNames; ENFSignals(ii).name};
     end
 end
 

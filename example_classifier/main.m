@@ -1,5 +1,10 @@
+%%%%%%%%%%%%%%%%%%%Load recording data%%%%%%%%%%%%%%%%%%%%%%%%%
+%make sure you have the slash at the end guys
+trainRecordings = getRecordings('../training_data/');
+testRecordings = getRecordings('../test_data/');
 
-recordings = getRecordings('../raw_data/');
+
+%%%%%%%%%%%%%%%%%%%ENF Extraction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 frame_size = 5;    %size of a frame (ENF point) in seconds, default 5
 overlap_enf = 0;   %overlap between frames, default 0
@@ -8,15 +13,16 @@ tolerance = 1.0;   %how much one expects the power frequency to vary from the op
 
 weightedEnergyExtractor = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance);
 
-ENFSignals = getENFSignals(recordings, weightedEnergyExtractor);
+ENFSignalsTrain = getENFSignals(trainRecordings, weightedEnergyExtractor, weightedEnergyExtractor, @signal_type);
+ENFSignalsTest = getENFSignals(testRecordings, weightedEnergyExtractor, weightedEnergyExtractor, @signal_type);
+
+%%%%%%%%%%%%%%%%%%%Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
 
 featureExtractors = {@featureMean, @featureLogRange,...
     @featureWaveletParameters, @featureARparameters};
 
 segmentSize = 96;
 
-[featureVectors, labels,recordingTypes] = segmentENFAndExtractFeatures(ENFSignals, featureExtractors, segmentSize);
-
-
-
+[trainFeatureVectors, trainLabels,trainRecordingTypes, originalfilenames] = segmentENFAndExtractFeatures(ENFSignalsTrain, featureExtractors, segmentSize);
+[testFeatureVectors, ~,~] = segmentENFAndExtractFeatures(ENFSignalsTest, featureExtractors, segmentSize);
 

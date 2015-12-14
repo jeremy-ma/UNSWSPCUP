@@ -40,7 +40,11 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
                 numer = numer + abs(sxx(jj,nn)) * fAxisSpectro(jj);
                 denom = denom + abs(sxx(jj,nn));
             end
-            enf(nn) = numer / denom;
+            if denom ~= 0
+                enf(nn) = numer / denom;
+            else
+                enf(nn) = 0;
+            end
         end
     end
     %return the parametrized function

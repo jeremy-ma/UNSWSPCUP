@@ -16,12 +16,20 @@ function recordings = getRecordings(dataDirectory)
         recordings(i).fs = fs;
         [~,name,~] = fileparts(wavFileList(i).name);
         disp(name)
+        recordings(i).name = name;
         [tokens, match] = regexp(name, regex,'tokens','match');
-        if length(match) ~= 0
+        if ~isempty(match)
             % training file
             recordings(i).gridID = tokens{1}(1);
-            recordings(i).recordingType = tokens{1}(2);
-            recordings(i).name = name;
+            
+            if strcmp('A',name) == 0
+                recordings(i).recordingType = 'AUDIO';
+            elseif strcmp('P',name) == 0
+                recordings(i).recordingType = 'POWER';
+            else
+                disp('unsupported filename format');
+                recordings(i).recordingType = 'UNKNOWN';
+            end
         else
             disp('unlabelled wav file read')
             recordings(i).gridID = 'UNKNOWN';
