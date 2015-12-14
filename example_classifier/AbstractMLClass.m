@@ -31,18 +31,33 @@ methods
         end
     end
     
+    function obj = cleardata(obj)
+        %clear the training & validation data set (if the model is train and test more than once. This keeps the tuning paramters)
+        Mdl = [];
+        obj.train_data = [];
+        obj.valid_data = [];
+        obj.train_tag = [];
+        obj.valid_tag = [];
+        obj.train_file = [];
+        obj.valid_file = [];
+        obj.train_label = [];
+        obj.valid_label = [];
+    end
+    
     % split_data into train/validation/test set
     function obj = split_data(obj,data,train_w)
 %         if train_w + valid_w + test_w ~=1
 %             error('train, validation & test data splitting weight should add up to 1')
 %         end
+
         
+
         %select audio / power from a certain grid
 %         tab_grid = tabulate(data.label_concat(:,1:2));
         tab_grid_num = tabulate(data.label_concat); %tabulate the grid type+letter+num, vs # of segments from each file
         file_list_grid = char(tab_grid_num(:,1));
-        tab_grid_file = tabulate(file_list_grid(:,1:2));    %tabulate the type+letter vs # of files from each grid
-        sel_vec = file_list_grid(:,3:end);  %extract file number (ie remove grid type+letter)
+        tab_grid_file = tabulate(file_list_grid(:,1));    %tabulate the type+letter vs # of files from each grid
+        sel_vec = file_list_grid(:,2:end);  %extract file number (ie remove grid type+letter)
         
         %iterate through all grids
         ptr = 1;    %pointer for distinguishing different grids
@@ -85,15 +100,15 @@ methods
     
     %convert data tag to label
     function obj = tag2label(obj)
-        if obj.mixAP
-            obj.train_label = obj.train_tag(:,2);
-            obj.valid_label = obj.valid_tag(:,2);
-%             obj.test_label = obj.test_tag(:,end-2);
-        else
-            obj.train_label = obj.train_tag(:,1:2);
-            obj.valid_label = obj.valid_tag(:,1:2);
+%         if obj.mixAP
+%             obj.train_label = obj.train_tag(:,1);
+%             obj.valid_label = obj.valid_tag(:,1);
+% %             obj.test_label = obj.test_tag(:,end-2);
+%         else
+            obj.train_label = obj.train_tag(:,1);
+            obj.valid_label = obj.valid_tag(:,1);
 %             obj.test_label = obj.test_tag(:,1:end-2);
-        end
+%         end
     end
     
     function obj = training(obj)
@@ -134,16 +149,16 @@ methods
         %implement "None of the above"
 %         result_label(conf_prob < 0.6,:) = 'NN'; %some threshold
         if conf_prob < 0.3
-            result_label = 'NN';
+            result_label = 'N';
         end
     end
     
     %calculate confusion matrix
     function confuse(obj,result_label,store_fig,store_text,conf_prob_merge)
-        C = confusionmat(obj.valid_file(:,1:2),result_label);
+        C = confusionmat(obj.valid_file(:,1),result_label);
 %         title_text = sprintf('Data Count run');
         title_text = store_text;
-        label_ax = [obj.Mdl.ClassNames; 'NN'];   %include 'None of the above' in the class
+        label_ax = [obj.Mdl.ClassNames; 'N'];   %include 'None of the above' in the class
         plot_confuse_m(C,label_ax,store_fig,title_text);
         t = table(obj.valid_file(:,1:2),result_label,conf_prob_merge,'VariableNames',{'TrueLabel','PredLabel','Probability'});
         writetable(t,fullfile(store_fig,[title_text '.csv']),'Delimiter',',')

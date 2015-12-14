@@ -1,4 +1,4 @@
-function plot_confuse_m(mat,label,store_fig,title_text)
+function f = plot_confuse_m(mat,label,store_fig,title_text)
 
 m_size = size(mat,1);
 f = figure('visible','off');
@@ -28,6 +28,6 @@ title(title_text)
 xlabel('Predicted Label')
 ylabel('Actual Label')
 
-saveas(f,fullfile(store_fig,title_text),'jpg');
+% saveas(f,fullfile(store_fig,title_text),'jpg');
 
 end

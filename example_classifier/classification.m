@@ -10,6 +10,8 @@ function store_label = classification(algo,store_text,train_data,train_w,test_da
         MdlObj = func_handle();
         
         for j=1:trials
+            %insert function fo parameter tuning
+            MdlObj = MdlObj.cleardata();
             MdlObj = MdlObj.split_data(train_data,train_w);
             MdlObj = MdlObj.training(MdlObj.train_data, MdlObj.train_label);
             [pred_label,score] = MdlObj.testing(MdlObj.valid_data);
@@ -19,10 +21,11 @@ function store_label = classification(algo,store_text,train_data,train_w,test_da
         end
             
         %apply on actual testing data
-        MdlObj = MdlObj.training(train_data.features_norm,train_data.label_concat(:,1:2));
+        MdlObj = MdlObj.cleardata();
+        MdlObj = MdlObj.training(train_data.features_norm,train_data.label_concat(:,1));
         [pred_label,score] = MdlObj.testing(test_data.features_norm);
         [merge_label, conf_prob_merge] = MdlObj.merge_seg(pred_label,score,test_data.label_file);
-        store_label = merge_label(:,2)'
+        store_label = merge_label(:,1)'
         save(fullfile(store_fig,'SVM.mat'),'store_label');%store predicted label of the test data into a file
     end
 end
