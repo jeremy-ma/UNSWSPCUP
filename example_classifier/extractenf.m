@@ -17,10 +17,10 @@ freqaxis = (fs/2)*linspace(0,1,(nfft/2));
 
 %fourier transform of the signal and half since symmetrical about fs/2:
 x = abs(fft(y, nfft));
-x = x(1:(nfft/2));
+x = x(1:(nfft/2));x
 
 %finding the nominal frequency.
-%compare the signal strength at 50 and 60Hz
+ncompare the signal strength at 50 and 60Hz
 s_50 = sum(x(freqaxis>45 & freqaxis<55));
 s_60 = sum(x(freqaxis>55 & freqaxis<65));
 if s_50 > s_60
@@ -50,7 +50,7 @@ for j=1:length(f)
                 X1=f(i)*abs(s(i,n))+X1;
                 X2=abs(s(i,n))+X2;
             end
-            enf(n)=X1/X2; % our ENF Vector
+            enf(n)=X1/X2; % our ENF Vector 
         end
     end
 end

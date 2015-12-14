@@ -7,6 +7,7 @@ function [ ENFSignals ] = getENFSignals( recordings, ENFExtractor )
         ENFSignals(ii).enf = ENFExtractor(recordings(ii).data,recordings(ii).fs);
         ENFSignals(ii).gridID = recordings(ii).gridID;
         ENFSignals(ii).recordingType = recordings(ii).recordingType;
+        disp(recordings(ii).name);
         disp('extracted');
     end
 end
