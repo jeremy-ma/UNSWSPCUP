@@ -1,0 +1,3 @@
+trainingDirectory = '../raw_data'
+
+

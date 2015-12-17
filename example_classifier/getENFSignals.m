@@ -9,7 +9,6 @@ function [ ENFSignals ] = getENFSignals( recordings, ENFExtractorPower, ENFExtra
         if strcmp(ENFSignals(ii).recordingType,'UNKNOWN') == 0
             ENFSignals(ii).recordingType = powerAudioClassifier(recordings(ii).data, recordings(ii).fs);
         end
-        
         if strcmp(ENFSignals(ii).recordingType,'POWER') == 0
             ENFSignals(ii).enf = ENFExtractorPower(recordings(ii).data,recordings(ii).fs);
         elseif strcmp(ENFSignals(ii).recordingType,'AUDIO') == 0

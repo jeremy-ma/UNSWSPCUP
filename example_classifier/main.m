@@ -16,13 +16,17 @@ weightedEnergyExtractor = getWeightedEnergyENFExtractor(frame_size,overlap_enf,n
 ENFSignalsTrain = getENFSignals(trainRecordings, weightedEnergyExtractor, weightedEnergyExtractor, @signal_type);
 ENFSignalsTest = getENFSignals(testRecordings, weightedEnergyExtractor, weightedEnergyExtractor, @signal_type);
 
-%%%%%%%%%%%%%%%%%%%Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%% Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
 
 featureExtractors = {@featureMean, @featureLogRange,...
     @featureWaveletParameters, @featureARparameters};
 
 segmentSize = 96;
 
-[trainFeatureVectors, trainLabels,trainRecordingTypes, originalfilenames] = segmentENFAndExtractFeatures(ENFSignalsTrain, featureExtractors, segmentSize);
+[trainFeatureVectors, trainLabels, gridLabels, trainRecordingTypes, originalfilenames] = segmentENFAndExtractFeatures(ENFSignalsTrain, featureExtractors, segmentSize);
 [testFeatureVectors, ~,~] = segmentENFAndExtractFeatures(ENFSignalsTest, featureExtractors, segmentSize);
+
+%%%%%%%%%%%%%%%%%%% Classifier %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+[ predicted, accuracy, probabilities ] = SVMClassify(trainFeatureVectors, trainLabels, testFeatureVectors, 8*ones(length(testFeatureVectors),1));
 
