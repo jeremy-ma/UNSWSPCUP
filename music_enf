@@ -4,45 +4,82 @@
 % Outputs: [enf, time]
 %**************************************************************************
 
-function [enf, time] = MUSIC_ENF(y, fs, framelength, overlap, win_len)
+function [enf1, time1] = MUSIC_ENF(y, fs, framelength, overlap, nom_freq)
 
-   [B,A] = butter(6,[48.5 52.4]/(fs/2));
-   y = filter(B, A, y);
 
-%split up signal into overlapping frames
-%each column of seg is a different frame
-seg = buffer(y, framelength, overlap);
+   % subplot(4,1,1);
+   % spectrogram(y, framelength, overlap, 1000, fs);
+   
+   % y = decimate(y,4,12);
+  %  fs = fs/4;
+  
+    %Take the spectrogram of the AUDIO/POWER signal
+    subplot(3,1,1);
+    spectrogram(y, framelength, overlap, 1000, fs);
+%     [S,F,T] = spectrogram(y, framelength, overlap, 1000, fs);
+%     [Y,I] = max(S);
+%     F(121)
+%     F(241)
+   
+    %loop through the first 5 harmonics extracting bandpass filtering
+%     %around each
+%      i = 1;
+%      while (i < 5)
+%          
+%          [B,A] = butter(6,[i*nom_freq-3, i*nom_freq+3]/(fs/2));
+%          y1 = [y1,filter(B, A, y)];
+%          
+%      end
+    
+    [B,A] = butter(6,[2*nom_freq-3, 2*nom_freq+3]/(fs/2));
+    y1 = filter(B, A, y);
 
-length(seg)
-enf = [];
-time = [];
+    [enf1, time1] = MUSIC_extract(y1, fs, framelength, overlap);
 
-i = 1;
+    subplot(3,1,2);
+    plot(time1,enf1);
+    
+    [B,A] = butter(6,[4*nom_freq-3, 4*nom_freq+3]/(fs/2));
+    y2 = filter(B, A, y);
+    
+    [enf2, time2] = MUSIC_extract(y2, fs, framelength, overlap);
 
-%loops through and for each column (frame)
-while (i < size(seg,2))
-    
-    temp = seg(:,i);
-    
-    corr = corrmtx(seg(:,i),12,'mod');
-    [W,P] = rootmusic(corr, 2);
-    
-    %convert from
-    W = (W*fs)/(2*pi);
-    
-    enf = [enf, W(1)];
-    time = [time, (framelength*(i-0.5))/fs];
-    
-    i = i +1;
+    subplot(3,1,3);
+    plot(time2,enf2);
+
+    xlabel('Time(sec)');
+    ylabel('Frequency(Hz)');
+
 end
 
 
-plot(time,enf);
+function [enf, time] = MUSIC_extract (y, fs, framelength, overlap)
+ 
+corr = 2;
 
-xlabel('Time(sec)');
-ylabel('Frequency(Hz)');
+    %split up signal into overlapping frames
+    %each column of seg is a different frame
+    seg = buffer(y, framelength, overlap);
 
+    enf = [];
+    time = [];
 
+    i = 1;
+   
+    %loops through and for each column (frame)
+    while (i < size(seg,2))
 
+        temp = seg(:,i);
+
+        corr = corrmtx(seg(:,i),16,'mod');
+        [W,P] = rootmusic(corr, 2);
+
+        %convert from
+        W = (W*fs)/(2*pi);
+
+        enf = [enf, W(1)];
+        time = [time, (framelength/2+(i-1)*(framelength-overlap))/fs];
+        i = i +1;
+    end
 
 end
