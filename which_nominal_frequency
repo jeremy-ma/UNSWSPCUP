@@ -1,0 +1,15 @@
+function fnom = which_nominal_frequency(data,fs)
+    offset = 5;
+    nfft = length(data);
+    freqaxis = (fs/2)*linspace(0,1,(nfft/2));
+
+    x = abs(fft(data, nfft));
+    x = x(1:(nfft/2));
+    s_50 = sum(x(freqaxis>50-offset & freqaxis<50+offset));
+    s_60 = sum(x(freqaxis>60-offset & freqaxis<60+offset));
+        if s_50 > s_60
+            fnom = 50;
+        else
+            fnom = 60;
+        end
+end
