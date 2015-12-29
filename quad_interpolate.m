@@ -1,4 +1,4 @@
-function freqvec = quad_interpolate(ynew, fsnew, framelen, overlap, nfft)
+function freqvec = quad_interpolate(ynew, fsnew, framelen, overlap, nfft, nopeaks)
 
 % NFFT points is 4*length of framelen described in the paper.
 
