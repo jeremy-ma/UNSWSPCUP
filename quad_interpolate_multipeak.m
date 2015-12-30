@@ -24,11 +24,18 @@ for i = 0:number_frames
         frame_freq_index = potential_peaks(j)-1+quadratic_maxima;
         freqmat(i+1,j) =  (frame_freq_index/nfft)*fsnew;
         while freqmat(i+1,j) >=65
-            freqmat(i+1,j) = freqmat(i+1,j)/2;
+            if freqmat(i+1,j) <= 135
+                freqmat(i+1,j) = freqmat(i+1,j)/2;
+            elseif freqmat(i+1,j) <=190
+                freqmat(i+1,j) = freqmat(i+1,j)/3;
+            else
+                freqmat(i+1,j) = freqmat(i+1,j)/2;
+            end
         end
     end
 end
 
 
 end
+
 
