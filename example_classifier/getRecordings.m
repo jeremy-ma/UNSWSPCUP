@@ -21,10 +21,9 @@ function recordings = getRecordings(dataDirectory)
         if ~isempty(match)
             % training file
             recordings(i).gridID = tokens{1}(1);
-            
-            if strcmp('A',name) == 0
+            if strcmp('A',tokens{1}(2)) == 1
                 recordings(i).recordingType = 'AUDIO';
-            elseif strcmp('P',name) == 0
+            elseif strcmp('P',tokens{1}(2)) == 1
                 recordings(i).recordingType = 'POWER';
             else
                 disp('unsupported filename format');

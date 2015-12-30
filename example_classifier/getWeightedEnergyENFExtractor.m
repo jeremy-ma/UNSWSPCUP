@@ -2,6 +2,7 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
 %pass in parameters for weightedEnergyENFExtractor
    
     function [enf, time] = extractenf(y, fs)
+
         framelength = framesize * fs;
         if isempty(nfft)
             nfft = max(256,2^(ceil(log2(length(y)))));
