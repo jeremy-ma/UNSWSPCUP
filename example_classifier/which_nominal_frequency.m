@@ -37,6 +37,6 @@ function [fnom] = which_nominal_frequency(data,fs)
             if dist_60 > 2 & dist_50 > 2
                fnom = 50;
             end
-            dist_50
-            dist_60
+            %dist_50
+            %dist_60
 end

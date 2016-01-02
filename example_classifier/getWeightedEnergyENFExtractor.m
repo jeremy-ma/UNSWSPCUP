@@ -1,6 +1,5 @@
 function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft, tolerance)
 %pass in parameters for weightedEnergyENFExtractor
-   
     function [enf, time] = extractenf(y, fs)
 
         framelength = framesize * fs;
@@ -15,15 +14,7 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
         x = abs(fft(y, nfft));
         x = x(1:(nfft/2));
 
-        %finding the nominal frequency.
-        %compare the signal strength at 50 and 60Hz
-        s_50 = sum(x(freqaxis>45 & freqaxis<55));
-        s_60 = sum(x(freqaxis>55 & freqaxis<65));
-        if s_50 > s_60
-            fnom = 50;
-        else
-            fnom = 60;
-        end
+        fnom = which_nominal_frequency(y,fs);
 
         [sxx,fAxisSpectro,time] = spectrogram(y, framelength, overlap, nfft, fs);
 

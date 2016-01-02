@@ -14,10 +14,11 @@ nfft = 2^14;       %nfft parameter when applying spectrogram, default 2^14
 tolerance = 1.0;   %how much one expects the power frequency to vary from the optimal 50 or 60
 
 weightedEnergyExtractor = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance);
-%%weightedEnergyExtractor = getAltExtractENF(frame_size,overlap_enf, nfft);
+%weightedEnergyExtractor = getAltExtractENF(frame_size,overlap_enf, nfft);
+%musicExtractor = getMusicExtractor(5000,1000);
 
-ENFSignalsTrain = getENFSignals(trainRecordings, @extractAud, @extractAud, @signal_type);
-ENFSignalsTest = getENFSignals(testRecordings, @extractAud, @extractAud, @signal_type);
+ENFSignalsTrain = getENFSignals(trainRecordings, weightedEnergyExtractor, weightedEnergyExtractor, @signal_type);
+ENFSignalsTest = getENFSignals(testRecordings, weightedEnergyExtractor, weightedEnergyExtractor, @signal_type);
 
 %%%%%%%%%%%%%%%%%%% Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -27,16 +28,15 @@ featureExtractors = {@featureMean, @featureLogRange,...
 segmentSize = 96;
 
 [trainFeatureVectors, trainLabels, gridLabels, trainRecordingTypes, originalfilenames] = segmentENFAndExtractFeatures(ENFSignalsTrain, featureExtractors, segmentSize);
-[testFeatureVectors, ~,~] = segmentENFAndExtractFeatures(ENFSignalsTest, featureExtractors, segmentSize);
+[testFeatureVectors, testLabels, testGridLabels, testRecordingTypes, testOriginalFileNames] = segmentENFAndExtractFeatures(ENFSignalsTest, featureExtractors, segmentSize);
 
 %%%%%%%%%%%%%%%%%%% Classifier %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-testLabels = load('testLabels.mat');
+%testLabels = load('testLabels.mat');
 
 save('trainTestData.mat','trainFeatureVectors','trainLabels','testFeatureVectors','testLabels');
+save('ENFSignals.mat','ENFSignalsTest','ENFSignalsTrain');
 
 %[ predicted, accuracy, probabilities ] = SVMClassify(trainFeatureVectors, trainLabels, testFeatureVectors, testLabels);
-
-
 
 
