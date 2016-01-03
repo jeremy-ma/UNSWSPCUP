@@ -9,6 +9,7 @@ function fnom = which_nominal_frequency(data,fs)
     i = 1;
     dist_50 = 20;
     dist_60 = 20;
+    dist_offset = 3;
     [peak,sample] = max(x);
     while(60*i < 500)
         temp_50 = abs(freqaxis(sample) - 50*i);
@@ -34,7 +35,7 @@ function fnom = which_nominal_frequency(data,fs)
                fnom = 0;
             end
             
-            if dist_60 > 2 & dist_50 > 2
+            if dist_60 > dist_offset & dist_50 > dist_offset
                fnom = 50;
             end
             dist_50
