@@ -1,0 +1,48 @@
+%Uses Joseph's original code but modified to sum the total frequency
+%components around the potential nominal frequencies and decide using these
+
+function fnom = find_freq(data,fs)
+
+    fnom = 0;
+    
+    %Threshold for whether a signal has any harmonic frequency
+    %THIS IS IMPORTANT AND I JUST GUESSED IT
+    thresh = 250;
+    
+
+    nfft = length(data);
+    freqaxis = (fs/2)*linspace(0,1,(nfft/2));
+
+    x = abs(fft(data, nfft));
+    x = x(1:(nfft/2));
+    plot(freqaxis,x);
+    
+    i = 1;
+    
+
+    %Sums the frequency components around each of the nominal frequencies
+    %and its harmonics
+    
+    %Eg. bin_50 adds the fft results from 47 to 53 Hz and from 97 to 103 Hz
+    %and so on for all harmonics
+    bin_50 = 0;
+    bin_60 = 0;
+    
+    while (i < 8)    
+        bin_50 = bin_50 + sum(x((50*i/500)*length(x)-3:(50*i/500)*length(x)+3));
+        bin_60 = bin_60 + sum(x((60*i/500)*length(x)-3:(60*i/500)*length(x)+3));
+        
+        i = i + 1;
+    end
+    
+    %bin with the most results wins
+    if ((bin_50 > bin_60)&&(bin_50 > thresh))
+       fnom = 50;
+    elseif (bin_60 > thresh)
+        fnom = 60;
+    end
+    
+bin_50
+bin_60
+
+end
