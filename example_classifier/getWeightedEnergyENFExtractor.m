@@ -1,4 +1,4 @@
-function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft, tolerance)
+function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft, tolerance, numberHarmonic)
 %pass in parameters for weightedEnergyENFExtractor
     function [enf, time] = extractenf(y, fs)
 
@@ -14,7 +14,7 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
         x = abs(fft(y, nfft));
         x = x(1:(nfft/2));
 
-        fnom = which_nominal_frequency(y,fs);
+        fnom = which_nominal_frequency(y,fs) * numberHarmonic;
 
         [sxx,fAxisSpectro,time] = spectrogram(y, framelength, overlap, nfft, fs);
 

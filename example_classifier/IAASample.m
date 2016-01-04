@@ -17,7 +17,7 @@ for i=1:1
         alphas(k) = ( A(:,k)' * inv(R) * data) / ( A(:,k)'*inv(R)*A(:,k));
     end
     P = diag(abs(alphas).^2);
-    R = A * P * A' + var(data) * eye(M); 
+    R = A * P * A' + var(data) * eye(M);
 end
 
 

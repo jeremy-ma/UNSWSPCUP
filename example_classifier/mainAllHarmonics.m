@@ -19,27 +19,35 @@ extractor3 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance
 %weightedEnergyExtractor = getAltExtractENF(frame_size,overlap_enf, nfft);
 %musicExtractor = getMusicExtractor(5000,1000);
 
-ENFSignalsTrain = getENFSignals(trainRecordings, extractorFundamental, extractorFundamental, @signal_type);
-ENFSignalsTest = getENFSignals(testRecordings, extractorFundamental, extractorFundamental, @signal_type);
-
-
-
+extractors = {extractorFundamental, extractor2, extractor3};
+ENFSignalsTrain = {};
+ENFSignalsTest = {};
+for ii=1:length(extractors)
+    ENFSignalsTrain{ii} = getENFSignals(trainRecordings, extractors{ii}, extractors{ii}, @signal_type);
+    ENFSignalsTest{ii} = getENFSignals(testRecordings, extractors{ii}, extractors{ii}, @signal_type);
+end
 
 %%%%%%%%%%%%%%%%%%% Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
 
 featureExtractors = {@featureMean, @featureLogRange,...
     @featureWaveletParameters, @featureARparameters};
+segmentSize = 120;
 
-segmentSize = 96;
+trainFeatures = [];
+testFeatures = [];
 
-[trainFeatureVectors, trainLabels, gridLabels, trainRecordingTypes, originalfilenames] = segmentENFAndExtractFeatures(ENFSignalsTrain, featureExtractors, segmentSize);
-[testFeatureVectors, testLabels, testGridLabels, testRecordingTypes, testOriginalFileNames] = segmentENFAndExtractFeatures(ENFSignalsTest, featureExtractors, segmentSize);
+for ii=1:length(extractors)  
+    [trainFeaturesTemp, trainLabels, gridLabels, trainRecordingTypes, originalfilenames] = segmentENFAndExtractFeatures(ENFSignalsTrain{ii}, featureExtractors, segmentSize);
+    [testFeaturesTemp, testLabels, testGridLabels, testRecordingTypes, testOriginalFileNames] = segmentENFAndExtractFeatures(ENFSignalsTest{ii}, featureExtractors, segmentSize);
+    trainFeatures = [trainFeaturesTemp, trainFeatures];
+    testFeatures = [testFeaturesTemp, testFeatures];
+end
 
 %%%%%%%%%%%%%%%%%%% Classifier %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %testLabels = load('testLabels.mat');
 
-save('trainTestData.mat','trainFeatureVectors','trainLabels','testFeatureVectors','testLabels');
+save('trainTestData.mat','trainFeatures','trainLabels','testFeatures','testLabels');
 save('ENFSignals.mat','ENFSignalsTest','ENFSignalsTrain');
 
 %[ predicted, accuracy, probabilities ] = SVMClassify(trainFeatureVectors, trainLabels, testFeatureVectors, testLabels);
