@@ -1,6 +1,5 @@
-
 %**************************************************************************
-% Inputs: [y, fs, framelength, overlap, win_len]
+% Inputs: [y, fs, framelength, overlap, nom_freq]
 % Outputs: [enf, time]
 %**************************************************************************
 
@@ -22,7 +21,7 @@
 %IMPORTANT - The paper suggests weighting on a frame by frame basis which
 %this implementation doesnt do (yet)
 
-function [comb_enf, time] = MUSIC_ENF(y, fs, framelength, overlap, nom_freq)
+function [comb_enf, time] = harmonics(y, fs, framelength, overlap, nom_freq)
  
     %Take the spectrogram of the AUDIO/POWER signal
     [S,F,T,P] = spectrogram(y, framelength, overlap, 1000, fs,'yaxis');
@@ -39,7 +38,10 @@ function [comb_enf, time] = MUSIC_ENF(y, fs, framelength, overlap, nom_freq)
         %Determine the power of the first 8 harmonics
         base = i*nom_freq;
         %Note: eventually replace sum(sum(...
-        harmonic_power(i) = sum(sum(abs(P((base-1:base+1),:))));
+        harmonic_power(i) = sum(sum(abs(P((base-4:base+4),:))));
+        
+        %experimental addition to calculating weight based on SNR
+        harmonic_power(i) = harmonic_power(i) / ((sum(sum(abs(P((base-8:base-4),:)))))+(sum(sum(abs(P((base+4:base+8),:))))));
         
         i = i + 1;
     end
@@ -53,7 +55,7 @@ function [comb_enf, time] = MUSIC_ENF(y, fs, framelength, overlap, nom_freq)
         harmonic_weight(i) = harmonic_power(i)/sum(harmonic_power);
 
         %bandpass filter around each harmonic
-        [B,A] = butter(4,[(i*nom_freq)-1, (i*nom_freq)+1]/(fs/2));
+        [B,A] = butter(5,[(i*nom_freq)-2, (i*nom_freq)+2]/(fs/2));
        
         %Use the rootMUSIC method to figure extract the ENF of
         %each of the bands
@@ -66,11 +68,13 @@ function [comb_enf, time] = MUSIC_ENF(y, fs, framelength, overlap, nom_freq)
         i = i + 1;
     end
   
+    print = [nom_freq*(1:8)',harmonic_weight']
+    
     time = temp_time(1,:);
 
     % Display the ENF extraced from the nominal band   
     subplot(3,1,2);
-    plot(time, temp_enf(1,:));
+    plot(time, temp_enf(3,:));
     xlabel('Time(sec)');
     ylabel('Frequency(Hz)');
 
