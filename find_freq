@@ -5,11 +5,6 @@ function fnom = find_freq(data,fs)
 
     fnom = 0;
     
-    %Threshold for whether a signal has any harmonic frequency
-    %THIS IS IMPORTANT AND I JUST GUESSED IT
-    thresh = 250;
-    
-
     nfft = length(data);
     freqaxis = (fs/2)*linspace(0,1,(nfft/2));
 
@@ -36,9 +31,9 @@ function fnom = find_freq(data,fs)
     end
     
     %bin with the most results wins
-    if ((bin_50 > bin_60)&&(bin_50 > thresh))
+    if (bin_50 > bin_60)
        fnom = 50;
-    elseif (bin_60 > thresh)
+    else
         fnom = 60;
     end
     
