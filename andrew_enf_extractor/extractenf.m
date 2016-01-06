@@ -1,6 +1,4 @@
-function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft, tolerance, numberHarmonic)
-    %pass in parameters for weightedEnergyENFExtractor
-    function [enf, time] = extractenf(y, fs)
+function [enf, time] = extractenf(y, fs, framesize, nfft, numberHarmonic, overlap, tolerance)
 
         framelength = framesize * fs;
         if isempty(nfft)
@@ -8,7 +6,7 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
         end
 
         %frequency axis for the FFT
-        freqaxis = (fs/2)*linspace(0,1,(nfft/2));
+        %freqaxis = (fs/2)*linspace(0,1,(nfft/2));
 
         %fourier transform of the signal and half since symmetrical about fs/2:
         x = abs(fft(y, nfft));
@@ -39,16 +37,3 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
             end
         end
     end
-
-    function [enf, time] = andrew_enf(y,fs)
-        fnom = which_nominal_frequency(y,fs);
-        %assume numberHarmonic exists and is 1,2 or 3
-        y1 = filter_signal(y,fs,fnom, 60, 0.1, numberHarmonic, 0.5);
-        fmat1 = quad_interpolate_multipeak(y1,fs,10000,0,40000,50);
-        enf = leastcostENF(fmat1);
-        time = [1:1:length(enf)];
-    end
-    %return the parametrized function
-    extractor = @andrew_enf;
-end
-

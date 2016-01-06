@@ -52,8 +52,9 @@ if __name__ == '__main__':
 
 	results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
 
-	print results['probability'][testLabels==13]
-	print results['probability'][testLabels==results['predicted']]
+	# print results['probability'][testLabels==13]
+	# print results['probability'][testLabels==results['predicted']]
+	print results['confusion']
 	print results['testAccuracy']
 	#print results
 
