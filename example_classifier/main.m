@@ -3,6 +3,7 @@
 trainRecordings = getRecordings('../training_data/');
 testRecordings = getRecordings('../practice_data/');
 
+
 %trainRecordings = load('trainRecordings.mat');
 %testRecordings = load('testRecordings.mat');
 

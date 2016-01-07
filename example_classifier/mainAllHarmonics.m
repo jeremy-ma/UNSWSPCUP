@@ -16,10 +16,11 @@ tolerance = 1.0;   %how much one expects the power frequency to vary from the op
 extractorFundamental = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,1);
 extractor2 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,2);
 extractor3 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,3);
+extractor4 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,4);
 %weightedEnergyExtractor = getAltExtractENF(frame_size,overlap_enf, nfft);
 %musicExtractor = getMusicExtractor(5000,1000);
 
-extractors = {extractorFundamental, extractor2, extractor3};
+extractors = {extractorFundamental, extractor2, extractor3,extractor4};
 ENFSignalsTrain = {};
 ENFSignalsTest = {};
 for ii=1:length(extractors)

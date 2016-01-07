@@ -9,7 +9,7 @@ function [features] = featureWaveletParameters(enf)
         %get the log variances of each of the wavelet decomposition bits
         logVar = log(var(decomposition(startIndex:(startIndex + sizes(k) - 1))));
         if isinf(logVar)
-            disp('hello')
+            disp('zero wavelet decomposition')
         end
         features(k) = logVar;
         startIndex = startIndex + sizes(k);
