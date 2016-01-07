@@ -7,7 +7,7 @@ testRecordings = getRecordings('../practice_dataset_labeled/');
 %testRecordings = load('testRecordings.mat');
 
 %%%%%%%%%%%%%%%%%%%ENF Extraction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
+
 frame_size = 5;    %size of a frame (ENF point) in seconds, default 5
 overlap_enf = 1;   %overlap between frames, default 0
 nfft = 2^14;       %nfft parameter when applying spectrogram, default 2^14
@@ -17,12 +17,10 @@ tolerance = 1.0;   %how much one expects the power frequency to vary from the op
 extractorFundamental = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,1);
 extractor2 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,2);
 extractor3 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,3);
-extractor4 = getWeightedEnergyENFExtractor(frame_size,overlap_enf,nfft,tolerance,4);
 %weightedEnergyExtractor = getAltExtractENF(frame_size,overlap_enf, nfft);
 %musicExtractor = getMusicExtractor(5000,1000);
 
-extractors = {extractorFundamental, extractor2, extractor3,extractor4};
-
+extractors = {extractorFundamental, extractor2, extractor3};
 ENFSignalsTrain = {};
 ENFSignalsTest = {};
 for ii=1:length(extractors)
@@ -31,13 +29,12 @@ for ii=1:length(extractors)
 end
 
 %%%%%%%%%%%%%%%%%%% Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-% load ENFSignals.mat
+
 featureExtractors = {@featureMean, @featureLogRange,...
     @featureWaveletParameters, @featureARparameters};
-% Time in seconds is 120*framesize = 600 seconds
-% To match the size of the practice file
-segmentSize = 60;  
+% time in seconds is 120*framesize = 600 seconds
+
+segmentSize = 120;  
 
 trainFeatures = [];
 testFeatures = [];

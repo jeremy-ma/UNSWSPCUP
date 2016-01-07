@@ -1,10 +1,10 @@
-function fnom = which_nominal_frequency(data,fs)
+    function fnom = which_nominal_frequency(data,fs)
     nfft = length(data);
     freqaxis = (fs/2)*linspace(0,1,(nfft/2));
 
     x = abs(fft(data, nfft));
     x = x(1:(nfft/2));
-%     plot(freqaxis,x);s
+    %plot(freqaxis,x);
     
     i = 1;
     dist_50 = 20;
@@ -27,18 +27,15 @@ function fnom = which_nominal_frequency(data,fs)
         %hold on;
         i = i+1;
     end
-    if dist_50 < dist_60
-       fnom = 50;
-    elseif dist_60 < dist_50
-       fnom = 60;
-    else
-       fnom = 0;
-    end
+            if dist_50 < dist_60
+               fnom = 50;
+            elseif dist_60 < dist_50
+               fnom = 60;
+            else
+               fnom = 0;
+            end
             
-    if dist_60 > dist_offset && dist_50 > dist_offset
-       fnom = 50;
-    end
-%     dist_50
-%     dist_60
+            if dist_60 > dist_offset & dist_50 > dist_offset
+               fnom = 50;
+            end
 end
-
