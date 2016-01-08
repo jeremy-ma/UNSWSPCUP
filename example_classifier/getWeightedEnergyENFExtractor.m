@@ -49,6 +49,6 @@ function [ extractor ] = getWeightedEnergyENFExtractor(framesize, overlap, nfft,
         time = [1:1:length(enf)];
     end
     %return the parametrized function
-    extractor = @andrew_enf;
+    extractor = @extractenf;
 end
 

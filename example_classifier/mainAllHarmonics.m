@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%Load recording data%%%%%%%%%%%%%%%%%%%%%%%%%
 %make sure you have the slash at the end guys
 trainRecordings = getRecordings('../training_data/');
-testRecordings = getRecordings('../practice_dataset_labeled/');
+testRecordings = getRecordings('../practice_data/');
 
 %trainRecordings = load('trainRecordings.mat');
 %testRecordings = load('testRecordings.mat');
@@ -37,7 +37,7 @@ featureExtractors = {@featureMean, @featureLogRange,...
     @featureWaveletParameters, @featureARparameters};
 % Time in seconds is 120*framesize = 600 seconds
 % To match the size of the practice file
-segmentSize = 60;  
+segmentSize = 120;  
 
 trainFeatures = [];
 testFeatures = [];
