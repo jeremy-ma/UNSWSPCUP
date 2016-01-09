@@ -1,5 +1,7 @@
 venv
+*.mat
 *.wav
+*.asv
 
 raw_data/Training_GridsAtoC/Readme.txt
 
