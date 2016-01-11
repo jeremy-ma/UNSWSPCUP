@@ -1,8 +1,8 @@
 function recordings = getRecordings(dataDirectory)
-
-    wavFileList = subdir(strcat(dataDirectory,'*.wav'));
-    regex = '[a-zA-Z]*_[a-zA-Z]*_([a-zA-Z])_(A|P)[\d]*';
     
+    wavFileList = subdir(fullfile(dataDirectory,'*.wav'));
+    regex = '[a-zA-Z]*_[a-zA-Z]*_([a-zA-Z])_(A|P)[\d]*';
+
     recordings(length(wavFileList)).data = 0;
     recordings(length(wavFileList)).fs = 0;
     recordings(length(wavFileList)).gridID = 0;
