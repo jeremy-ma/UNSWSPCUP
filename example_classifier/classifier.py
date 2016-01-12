@@ -18,15 +18,18 @@ def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
     classifier.fit(trainFeatures, trainLabels)
     onevsAll = trainOneVsAll(trainFeatures, trainLabels)
     predictions = classifier.predict(testFeatures)
-    #oneClassSVM =  svm.OneClassSVM(nu=0.1, kernel='poly', degree =3, gamma=0.1)
+    #oneClassSVM =  svm.OneClassSVM(kernel='rbf')
     #oneClassSVM.fit(trainFeatures)
 
     for i, prediction in enumerate(predictions):
         features = testFeatures[i].reshape(1,-1)
+        probabilities = classifier.predict_proba(features)
         outlier = onevsAll[prediction].predict(features)[0]
+        outlier = voteOneVsAll(onevsAll,classifier,features)
+
+
         #outlier = oneClassSVM.predict(features)
         if outlier == True:
-            #pass
             predictions[i] = helper.UNKNOWN
             #print "#############################################"
             #print onevsAll[prediction].predict_proba(features)[0]
@@ -60,6 +63,23 @@ def trainOneVsAll(trainFeatures, trainLabels):
 
     return classifiers
 
+def simpleVoteOneVsAll(classifiers, mainClassifier, features):
+    truescore = 0
+    falsescore = 0
+    probabilities = mainClassifier.predict_proba(features)[0]
+    labelToIndex = {label:index for (index, label) in enumerate(mainClassifier.classes_)}
+    for label, classifier in classifiers.iteritems():
+        if classifier.predict(features)[0] == True:
+            truescore += probabilities[labelToIndex[label]]
+        else:
+            falsescore += probabilities[labelToIndex[label]]
+
+    return truescore > falsescore
+
+def probabilityVoteOneVsAll(classifiers, mainClassifier, features):
+    pass
+
+
 def featureImportance(X,y):
     forest = ExtraTreesClassifier(n_estimators=2000,
                               random_state=0)
@@ -88,7 +108,7 @@ def featureImportance(X,y):
 
 if __name__ == '__main__':
     #trainFeatures,trainLabels,testFeatures,testLabels = helper.randomLoadData('trainTestData.mat')
-    trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestDataAndrew.mat')
+    trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
 
     #pdb.set_trace()
     #min_max_scaler = preprocessing.MinMaxScaler(feature_range=(-100,100))
@@ -107,6 +127,8 @@ if __name__ == '__main__':
     results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
     print results
     print results['testAccuracy'], results['trainAccuracy']
+
+    #pdb.set_trace()
     """
     testUnknownLabels = [label==(ord('N')-ord('A')) for label in testLabels]
 
@@ -121,4 +143,10 @@ if __name__ == '__main__':
     rows = resultsUnknown['predicted'] == unknownTestLabels
     print resultsUnknown['probability'][rows]
     """
-    featureImportance(trainFeatures,trainLabels)
+    #featureImportance(trainFeatures,trainLabels)
+    trainFeatures, trainLabels, testFeatures, testLabels = helper.testUnknown( trainFeatures, trainLabels, testFeatures, testLabels,
+                                                                                newUnknownLabels=[6])
+
+    results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
+
+    print results

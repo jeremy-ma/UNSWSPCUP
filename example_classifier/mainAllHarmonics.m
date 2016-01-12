@@ -38,7 +38,7 @@ end
 %%%%%%%%%%%%%%%%%%% Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 % load ENFSignals.mat
-featureExtractors = {@featureMean, @featureLogRange,...
+featureExtractors = {@featureMean, @featureLogRange, @featureLogVariance...
     @featureWaveletParameters, @featureARparameters};
 % Time in seconds is 120*framesize = 600 seconds
 % To match the size of the practice file
