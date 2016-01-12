@@ -25,8 +25,7 @@ def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
         features = testFeatures[i].reshape(1,-1)
         probabilities = classifier.predict_proba(features)
         outlier = onevsAll[prediction].predict(features)[0]
-        outlier = voteOneVsAll(onevsAll,classifier,features)
-
+        outlier = probabilityVoteOneVsAll(onevsAll,classifier,features)
 
         #outlier = oneClassSVM.predict(features)
         if outlier == True:
@@ -54,7 +53,7 @@ def trainOneVsAll(trainFeatures, trainLabels):
         clf = svm.SVC(kernel='rbf', probability=True, class_weight={False:0.9, True:0.1})
         #clf = svm.SVC(kernel='poly',degree=3,probability=True, class_weight={False:0.9, True:0.1})
         #clf = RandomForestClassifier(n_estimators=1000,class_weight={False:0.9, True:0.01})
-        #clf = ExtraTreesClassifier(n_estimators=2000,class_weight={False:0.95, True:0.01})
+        #clf = ExtraTreesClassifier(n_estimators=1000, class_weight='balanced')
         classifiers[label] = clf
 
     for label, classifier in classifiers.iteritems():
@@ -63,6 +62,7 @@ def trainOneVsAll(trainFeatures, trainLabels):
 
     return classifiers
 
+# return true if an outlier
 def simpleVoteOneVsAll(classifiers, mainClassifier, features):
     truescore = 0
     falsescore = 0
@@ -76,9 +76,19 @@ def simpleVoteOneVsAll(classifiers, mainClassifier, features):
 
     return truescore > falsescore
 
+# return true if an outlier, incorporate probability into the vote
 def probabilityVoteOneVsAll(classifiers, mainClassifier, features):
-    pass
+    truescore = 0
+    falsescore = 0
+    probabilities = mainClassifier.predict_proba(features)[0]
+    labelToIndex = {label:index for (index, label) in enumerate(mainClassifier.classes_)}
+    for label, classifier in classifiers.iteritems():
+        oneVsAllprobabilities = classifier.predict_proba(features)[0]
+        labelToIndexOneVsAll = {label:index for (index,label) in enumerate(classifier.classes_)}
+        truescore += probabilities[labelToIndex[label]] * oneVsAllprobabilities[labelToIndexOneVsAll[True]] * 0.1
+        falsescore += probabilities[labelToIndex[label]] * oneVsAllprobabilities[labelToIndexOneVsAll[False]] * 0.9
 
+    return truescore > falsescore
 
 def featureImportance(X,y):
     forest = ExtraTreesClassifier(n_estimators=2000,
@@ -145,7 +155,7 @@ if __name__ == '__main__':
     """
     #featureImportance(trainFeatures,trainLabels)
     trainFeatures, trainLabels, testFeatures, testLabels = helper.testUnknown( trainFeatures, trainLabels, testFeatures, testLabels,
-                                                                                newUnknownLabels=[6])
+                                                                                newUnknownLabels=[0])
 
     results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
 
