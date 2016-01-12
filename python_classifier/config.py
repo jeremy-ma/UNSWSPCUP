@@ -1,3 +1,0 @@
-trainingDirectory = '../raw_data'
-
-
