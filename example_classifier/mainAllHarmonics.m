@@ -1,7 +1,9 @@
 %%%%%%%%%%%%%%%%%%%Load recording data%%%%%%%%%%%%%%%%%%%%%%%%%
-%make sure you have the slash at the end guys
+%make sure you have the slash at the end
 trainRecordings = getRecordings('../training_data/');
-testRecordings = getRecordings('../practice_data/');
+%testRecordings = getRecordings('../practice_data/');
+testRecordings = getRecordings('../Testing_dataset/');
+
 
 %trainRecordings = load('trainRecordings.mat');
 %testRecordings = load('testRecordings.mat');
@@ -58,9 +60,9 @@ end
 
 %testLabels = load('testLabels.mat');
 
-save('trainTestData.mat','trainFeatures','trainLabels','testFeatures','testLabels',...
+save('trainTestDataTEST.mat','trainFeatures','trainLabels','testFeatures','testLabels',...
     'trainFileNames','testFileNames');
-save('ENFSignals.mat','ENFSignalsTest','ENFSignalsTrain');
+save('ENFSignalsTEST.mat','ENFSignalsTest','ENFSignalsTrain');
 
 %[ predicted, accuracy, probabilities ] = SVMClassify(trainFeatureVectors, trainLabels, testFeatureVectors, testLabels);
 

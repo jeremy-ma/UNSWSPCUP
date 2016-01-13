@@ -13,6 +13,44 @@ from sklearn.ensemble import RandomForestClassifier, VotingClassifier, ExtraTree
 from sklearn.cross_validation import train_test_split
 from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
+from collections import Counter
+import re
+
+
+
+def writeResults(results, testFiles,outputFile='results.txt'):
+    #sort test files based on number
+    regex = re.compile(r'[a-zA-Z]+_(?P<filenum>\d+)\.{0,1}\w*')
+
+    allResults = {}
+    simpleResults = {}
+    with open(outputFile,'wb') as fi:
+        for i, label in enumerate(results['predicted']):
+            filename = testFiles[i]
+            match = regex.match(filename)
+            filenum = int(match.group('filenum'))
+            predictedLabelChar = chr(label + ord('A'))
+            if predictedLabelChar != 'N':
+                #include probability
+                probability = results['probability'][i][label]
+                assert probability == np.max(results['probability'][i])
+                assert label == np.argmax(results['probability'][i])
+            else:
+                probability = 'N/A'
+
+            allResults[filenum] = "Test{0} {1} Confidence:{2}\n".format(filenum, predictedLabelChar, probability)
+            simpleResults[filenum] = predictedLabelChar
+
+        toWrite = sorted(list(allResults.iteritems()))
+        for num, rowStr in toWrite:
+            fi.write(rowStr)
+
+    with open('resultsSimple.txt','wb') as fi:
+        toWrite = sorted(list(simpleResults.iteritems()))
+        outputString = ''
+        for _, label in toWrite:
+            outputString += label
+        fi.write(outputString)
 
 
 if __name__=='__main__':
@@ -25,6 +63,11 @@ if __name__=='__main__':
     print results['predicted']
     print testFiles
 
-    sortedResults = sorted(zip(results['predicted'],testFiles))
+    sortedResults = sorted(zip(testFiles,results['predicted']))
     print sortedResults
     print sorted(results['predicted'])
+
+    counts= Counter(sorted(results['predicted']))
+    print ['G{0}:{1}'.format(grid,count) for grid, count in counts.iteritems()]
+
+    writeResults(results,testFiles,'results.txt')

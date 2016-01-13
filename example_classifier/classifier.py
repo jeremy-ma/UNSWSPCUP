@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier, VotingClassifier, ExtraTree
 from sklearn.cross_validation import train_test_split
 from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
+from sklearn.grid_search import GridSearchCV
 
 
 def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
@@ -25,7 +26,8 @@ def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
         features = testFeatures[i].reshape(1,-1)
         probabilities = classifier.predict_proba(features)
         outlier = onevsAll[prediction].predict(features)[0]
-        outlier = probabilityVoteOneVsAll(onevsAll,classifier,features)
+        #outlier = probabilityVoteOneVsAll(onevsAll,classifier,features)
+        #outlier = vidhyaProbabilityOutlier(classifier,features)
 
         #outlier = oneClassSVM.predict(features)
         if outlier == True:
@@ -50,15 +52,28 @@ def trainOneVsAll(trainFeatures, trainLabels):
     labels = set(trainLabels)
     classifiers = {}
     for label in labels:
-        clf = svm.SVC(kernel='rbf', probability=True, class_weight={False:0.9, True:0.1})
+        #clf = svm.SVC(kernel='rbf', probability=True, class_weight={False:0.9, True:0.1})
         #clf = svm.SVC(kernel='poly',degree=3,probability=True, class_weight={False:0.9, True:0.1})
         #clf = RandomForestClassifier(n_estimators=1000,class_weight={False:0.9, True:0.01})
         #clf = ExtraTreesClassifier(n_estimators=1000, class_weight='balanced')
-        classifiers[label] = clf
+        clf = svm.SVC(kernel='rbf', probability=True, class_weight='balanced')
 
-    for label, classifier in classifiers.iteritems():
+        #param_grid=[{'C':[0.1,1,10,100,1000,10000],'gamma': [1.0,0.1,0.01,0.001, 0.0001,0.0001], 'kernel': ['rbf']}],
         binaryLabels = trainLabels != label
-        classifier.fit(trainFeatures, binaryLabels)
+        """
+        gridSearchClf = GridSearchCV(svm.SVC(kernel='rbf', probability=True),
+            param_grid=[{'class_weight':[{False:0.9,True:0.1},'balanced',{False:0.8,True:0.1},{False:8.0/9.0,True:1.0/9.0}],
+                         'kernel':['rbf']}], cv=10)
+        binaryLabels = trainLabels != label
+        gridSearchClf.fit(trainFeatures, binaryLabels)
+        print label
+        print gridSearchClf.grid_scores_
+        print gridSearchClf.best_params_
+        print gridSearchClf.best_score_
+        classifiers[label] = gridSearchClf.best_estimator_
+        """
+        clf.fit(trainFeatures, binaryLabels)
+        classifiers[label] = clf
 
     return classifiers
 
@@ -89,6 +104,16 @@ def probabilityVoteOneVsAll(classifiers, mainClassifier, features):
         falsescore += probabilities[labelToIndex[label]] * oneVsAllprobabilities[labelToIndexOneVsAll[False]] * 0.9
 
     return truescore > falsescore
+
+def vidhyaProbabilityOutlier(mainClassifier, features):
+
+    probabilities = mainClassifier.predict_proba(features)[0]
+    probabilityIn = sum(probabilities) * 0.9
+    probabilityOut = 1-probabilityIn
+
+    return probabilityOut > 0.5
+
+
 
 def featureImportance(X,y):
     forest = ExtraTreesClassifier(n_estimators=2000,
