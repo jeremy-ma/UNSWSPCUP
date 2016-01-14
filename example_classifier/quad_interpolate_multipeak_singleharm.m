@@ -1,4 +1,4 @@
-function freqmat = quad_interpolate_multipeak(y, fs, framelength, overlap, nfft, nopeaks)
+function freqmat = quad_interpolate_multipeak_singleharm(y, fs, framelength, overlap, nfft, nopeaks)
 
 % NFFT points is 4*length of framelen described in the paper.
 
@@ -24,6 +24,4 @@ for i = 0:number_frames
     freqmat(:,i+1) =  (frame_freq_index_M/nfft)*fs;
 end
 
-
 end
-

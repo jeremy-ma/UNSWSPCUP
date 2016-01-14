@@ -1,8 +1,10 @@
 %%%%%%%%%%%%%%%%%%%Load recording data%%%%%%%%%%%%%%%%%%%%%%%%%
+
+data = 'C:\Users\Adrian\ICASP\data'
 %make sure you have the slash at the end
-trainRecordings = getRecordings('../training_data/');
+trainRecordings = getRecordings(fullfile(data, 'Training_Set'));
 %testRecordings = getRecordings('../practice_data/');
-testRecordings = getRecordings('../Testing_dataset/');
+testRecordings = getRecordings(fullfile(data, 'Testing_Set'));
 
 
 %trainRecordings = load('trainRecordings.mat');
@@ -40,7 +42,7 @@ end
 %%%%%%%%%%%%%%%%%%% Feature Extraction %%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 % load ENFSignals.mat
-featureExtractors = {@featureMean, @featureLogRange, @featureLogVariance...
+featureExtractors = {@featureMean, @featureLogRange, @featureLogVariance ...
     @featureWaveletParameters, @featureARparameters};
 % Time in seconds is 120*framesize = 600 seconds
 % To match the size of the practice file
@@ -65,5 +67,11 @@ save('trainTestDataTEST.mat','trainFeatures','trainLabels','testFeatures','testL
 save('ENFSignalsTEST.mat','ENFSignalsTest','ENFSignalsTrain');
 
 %[ predicted, accuracy, probabilities ] = SVMClassify(trainFeatureVectors, trainLabels, testFeatureVectors, testLabels);
+
+% This should work if you're using system python
+[status,cmdout] = system('python app.py')
+
+% Otherwise manually run your own python, e.g.
+% [status, cmdout] = system('C:\Users\Adrian\AppData\Local\Enthought\Canopy\User\Scripts\python app.py');
 
 
