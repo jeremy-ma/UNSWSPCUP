@@ -45,7 +45,7 @@ def writeResults(results, testFiles,outputFile='results.txt'):
         for num, rowStr in toWrite:
             fi.write(rowStr)
 
-    with open('resultsSimple.txt','wb') as fi:
+    with open('Simple'+outputFile,'wb') as fi:
         toWrite = sorted(list(simpleResults.iteritems()))
         outputString = ''
         for _, label in toWrite:
@@ -70,4 +70,5 @@ if __name__=='__main__':
     counts= Counter(sorted(results['predicted']))
     print ['G{0}:{1}'.format(grid,count) for grid, count in counts.iteritems()]
 
-    writeResults(results,testFiles,'results.txt')
+    writeResults(results,testFiles,'NoVotingResults.txt')
+

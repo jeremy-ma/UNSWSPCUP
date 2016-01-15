@@ -25,8 +25,8 @@ def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
     for i, prediction in enumerate(predictions):
         features = testFeatures[i].reshape(1,-1)
         probabilities = classifier.predict_proba(features)
-        outlier = onevsAll[prediction].predict(features)[0]
-        #outlier = probabilityVoteOneVsAll(onevsAll,classifier,features)
+        #outlier = onevsAll[prediction].predict(features)[0]
+        outlier = probabilityVoteOneVsAll(onevsAll,classifier,features)
         #outlier = vidhyaProbabilityOutlier(classifier,features)
 
         #outlier = oneClassSVM.predict(features)
@@ -56,7 +56,7 @@ def trainOneVsAll(trainFeatures, trainLabels):
         #clf = svm.SVC(kernel='poly',degree=3,probability=True, class_weight={False:0.9, True:0.1})
         #clf = RandomForestClassifier(n_estimators=1000,class_weight={False:0.9, True:0.01})
         #clf = ExtraTreesClassifier(n_estimators=1000, class_weight='balanced')
-        clf = svm.SVC(kernel='rbf', probability=True, class_weight='balanced')
+        clf = svm.SVC(kernel='rbf', probability=True, class_weight={False:0.9, True:0.1})
 
         #param_grid=[{'C':[0.1,1,10,100,1000,10000],'gamma': [1.0,0.1,0.01,0.001, 0.0001,0.0001], 'kernel': ['rbf']}],
         binaryLabels = trainLabels != label
@@ -178,10 +178,10 @@ if __name__ == '__main__':
     rows = resultsUnknown['predicted'] == unknownTestLabels
     print resultsUnknown['probability'][rows]
     """
+
     #featureImportance(trainFeatures,trainLabels)
-    trainFeatures, trainLabels, testFeatures, testLabels = helper.testUnknown( trainFeatures, trainLabels, testFeatures, testLabels,
-                                                                                newUnknownLabels=[0])
+    #trainFeatures, trainLabels, testFeatures, testLabels = helper.testUnknown( trainFeatures, trainLabels, testFeatures, testLabels,
+    #                                                                            newUnknownLabels=[0])
 
-    results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
+    #results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
 
-    print results
