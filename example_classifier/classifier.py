@@ -8,10 +8,11 @@ from sklearn import preprocessing
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier, ExtraTreesClassifier, GradientBoostingClassifier
-from sklearn.cross_validation import train_test_split
+from sklearn.cross_validation import train_test_split, cross_val_score
 from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
 from sklearn.grid_search import GridSearchCV
+from sklearn.cross_validation import StratifiedKFold
 
 
 def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
@@ -41,6 +42,8 @@ def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
     results['classifier'] = classifier
     results['confusion'] = confusion_matrix(testLabels, results['predicted'],[0,1,2,3,4,5,6,7,8,helper.UNKNOWN])
     results['probability'] = classifier.predict_proba(testFeatures)
+    cvScores = cross_val_score(classifier, trainFeatures, trainLabels, cv=10)
+    results['CV_Accuracy_Stdev'] = (cvScores.mean(),cvScores.std())
     try:
         results['trainAccuracy'] = classifier.oob_score_
     except:
@@ -140,25 +143,33 @@ def featureImportance(X,y):
     plt.xlim([-1, X.shape[1]])
     plt.show()
 
-
-if __name__ == '__main__':
-    #trainFeatures,trainLabels,testFeatures,testLabels = helper.randomLoadData('trainTestData.mat')
+def parameterSearch():
     trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
 
-    #pdb.set_trace()
-    #min_max_scaler = preprocessing.MinMaxScaler(feature_range=(-100,100))
-    #trainFeatures = min_max_scaler.fit_transform(trainFeatures)
-    #testFeatures = min_max_scaler.transform(testFeatures)
+    for i in xrange(10):
+        clf = GridSearchCV(ExtraTreesClassifier(n_estimators=1000,n_jobs=-1),
+                           param_grid={'bootstrap':[False],'min_samples_split':[1,2,3,4,5]},
+                           n_jobs=-1, cv=10)
+        clf.fit(trainFeatures,trainLabels)
 
-    #normaliser = preprocessing.StandardScaler()
-    #trainFeatures = normaliser.fit_transform(trainFeatures)
-    #testFeatures = normaliser.transform(testFeatures)
+        print clf.best_params_
+        print clf.best_score_
+        print clf.grid_scores_
+
+
+
+
+if __name__ == '__main__':
+
+    #parameterSearch()
+
+    trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
 
     print trainFeatures.shape
 
     #classifier = RandomForestClassifier(n_estimators=2000, oob_score = True, min_samples_split=1)
     #classifier = GradientBoostingClassifier(n_estimators=1000)
-    classifier = ExtraTreesClassifier(n_estimators=2000, oob_score=True, bootstrap=True)
+    classifier = ExtraTreesClassifier(n_estimators=1000, bootstrap=False, n_jobs=-1)
     results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
     print results
     print results['testAccuracy'], results['trainAccuracy']
