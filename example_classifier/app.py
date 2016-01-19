@@ -49,26 +49,35 @@ def writeResults(results, testFiles,outputFile='results.txt'):
         toWrite = sorted(list(simpleResults.iteritems()))
         outputString = ''
         for _, label in toWrite:
-            outputString += label
+            outputString += label + '\n'
         fi.write(outputString)
+
+
+
 
 
 if __name__=='__main__':
 
     trainFeatures, trainLabels, testFeatures, testLabels,trainFiles,testFiles = helper.loadData('trainTestDataTEST.mat')
+
+    print "Loaded Files...."
     testFiles = [x[0] for x in testFiles[0]]
-    clf = ExtraTreesClassifier(n_estimators=2000, oob_score=True, bootstrap=True)
+    clf = ExtraTreesClassifier(n_estimators=1000,n_jobs=-1,bootstrap=False)
+
+    print "Training Classifier..."
+
     results = classifier.evaluate(clf, trainFeatures,trainLabels,testFeatures,testLabels)
 
-    print results['predicted']
-    print testFiles
-
     sortedResults = sorted(zip(testFiles,results['predicted']))
+
+
+    print "Outputting Predictions..."
     print sortedResults
     print sorted(results['predicted'])
 
     counts= Counter(sorted(results['predicted']))
     print ['G{0}:{1}'.format(grid,count) for grid, count in counts.iteritems()]
 
-    writeResults(results,testFiles,'NoVotingResults.txt')
+    print "Writing Results to Results.txt"
+    writeResults(results,testFiles,'Results.txt')
 

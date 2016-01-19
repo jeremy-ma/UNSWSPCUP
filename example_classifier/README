@@ -1,0 +1,26 @@
+WEIRD GROWNUPS
+REQUIREMENTS
+1. MATLAB
+2. PYTHON 2.7 with scipy, numpy scikit learn
+installation instructions
+Download anaconda installer from 
+https://www.continuum.io/downloads
+(this will override the default installation of python)
+
+
+To verify dataset results...
+1. run mainAllHarmonics.m with the lines
+trainRecordings = getRecordings(*PATH TO TRAINING DATA HERE*);
+testRecordings = getRecordings(*PATH TO TESTING DATA HERE*);
+ensure the '/' at the end is included e.g
+testRecordings = getRecordings('../practice_data/');
+
+2. run app.py in the same directory as the .m files
+From the command line
+python app.py
+
+3. view file results.txt
+
+
+
+

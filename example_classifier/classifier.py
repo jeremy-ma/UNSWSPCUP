@@ -122,23 +122,25 @@ def featureImportance(X,y):
     forest = ExtraTreesClassifier(n_estimators=2000,
                               random_state=0)
 
+    indexToENFFeatureNum = {x:"{0}-{1}".format(x/11+1,x%11+1) for x in xrange(88)}
     forest.fit(X, y)
     importances = forest.feature_importances_
     std = np.std([tree.feature_importances_ for tree in forest.estimators_],
                  axis=0)
     indices = np.argsort(importances)[::-1]
-
     # Print the feature ranking
     print("Feature ranking:")
 
     for f in range(X.shape[1]):
         print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
-
     # Plot the feature importances of the forest
     plt.figure()
-    plt.title("Feature importances")
+    plt.title("Top 20 Features by Importance")
+    plt.xlabel("(ENF Signal)-(Feature Index)")
+    plt.ylabel("Relative Feature Importance")
     plt.bar(range(X.shape[1]), importances[indices],
            color="r", yerr=std[indices], align="center")
+    indices = [indexToENFFeatureNum[i] for i in indices]
     plt.xticks(range(X.shape[1]), indices)
     plt.xlim([-1, X.shape[1]])
     plt.show()
@@ -146,8 +148,9 @@ def featureImportance(X,y):
 def parameterSearch():
     trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
 
+
     for i in xrange(10):
-        clf = GridSearchCV(ExtraTreesClassifier(n_estimators=1000,n_jobs=-1),
+        clf = GridSearchCV(ExtraTreesClassifier(n_estimators=1000),
                            param_grid={'bootstrap':[False],'min_samples_split':[1,2,3,4,5]},
                            n_jobs=-1, cv=10)
         clf.fit(trainFeatures,trainLabels)
@@ -156,43 +159,34 @@ def parameterSearch():
         print clf.best_score_
         print clf.grid_scores_
 
+def testENFChoices():
+    enfchoices = [[0],[0,1,2,3],[4],[4,5,6,7],[0,4],[0,1,2,3,4,5,6,7]]
+
+    testAccuracies = [0 for i in xrange(len(enfchoices))]
+    for j in xrange(len(enfchoices)):
+        trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
+        enfsignals = enfchoices[j]
+        enfsignals = [index for x in enfsignals for index in range(x*11,x*11+11)]
+        trainFeatures = trainFeatures[:,enfsignals]
+        testFeatures = testFeatures[:,enfsignals]
+
+        print trainFeatures.shape
+
+        print "Training classifier..."
+        #classifier = RandomForestClassifier(n_estimators=2000, oob_score=True, n_jobs=-1)
+        classifier = ExtraTreesClassifier(n_estimators=2000)
+        results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
+        print results
+        testAccuracies[j] = results['testAccuracy']
 
 
+    print testAccuracies
+
+def testPracticeSet():
+    trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
+    classifier = ExtraTreesClassifier(n_estimators=2000, n_jobs=-1)
+    results = evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels)
+    print results
 
 if __name__ == '__main__':
-
-    #parameterSearch()
-
-    trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
-
-    print trainFeatures.shape
-
-    #classifier = RandomForestClassifier(n_estimators=2000, oob_score = True, min_samples_split=1)
-    #classifier = GradientBoostingClassifier(n_estimators=1000)
-    classifier = ExtraTreesClassifier(n_estimators=1000, bootstrap=False, n_jobs=-1)
-    results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
-    print results
-    print results['testAccuracy'], results['trainAccuracy']
-
-    #pdb.set_trace()
-    """
-    testUnknownLabels = [label==(ord('N')-ord('A')) for label in testLabels]
-
-    unknownClassifier = RandomForestClassifier(n_estimators=10000, oob_score=True, class_weight='balanced')
-    #unknownClassifier = AdaBoostClassifier(n_estimators=1000)
-    #unknownClassifier = svm.SVC(kernel='rbf', C=10, probability=True)
-
-    unknownTrainFeatures, unknownTestFeatures, unknownTrainLabels, unknownTestLabels = train_test_split(results['probability'], 
-                                                                                        testUnknownLabels, test_size=0.33)
-    resultsUnknown = evaluate(unknownClassifier, unknownTrainFeatures, unknownTrainLabels, unknownTestFeatures, unknownTestLabels)
-    print resultsUnknown
-    rows = resultsUnknown['predicted'] == unknownTestLabels
-    print resultsUnknown['probability'][rows]
-    """
-
-    #featureImportance(trainFeatures,trainLabels)
-    #trainFeatures, trainLabels, testFeatures, testLabels = helper.testUnknown( trainFeatures, trainLabels, testFeatures, testLabels,
-    #                                                                            newUnknownLabels=[0])
-
-    #results = evaluate(classifier, trainFeatures,trainLabels,testFeatures,testLabels)
-
+    testPracticeSet()

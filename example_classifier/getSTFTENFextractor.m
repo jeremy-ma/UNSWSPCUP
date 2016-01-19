@@ -1,7 +1,7 @@
 function [extractor] = getSTFTENFextractor(frameduration, overlap, nfft,harmonic)
     
     function [enf] = STFTENFextract(y,fs)
-        fnom = which_nominal_frequency(y,fs) * harmonic;
+        fnom = getNominalFrequency(y,fs) * harmonic;
         framelength = frameduration * fs;
         overlapLength = overlap * fs;
         A_stop1 = 60;		% Attenuation in the first stopband = 60 dB
@@ -35,7 +35,6 @@ function [extractor] = getSTFTENFextractor(frameduration, overlap, nfft,harmonic
             freqEst =  - p(2) / (2*p(1));
             enf(ii) = (freqEst * mu(2)) + mu(1);
         end
-        
         
     end
     extractor = @STFTENFextract;
