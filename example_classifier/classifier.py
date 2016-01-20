@@ -13,7 +13,7 @@ from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
 from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import StratifiedKFold
-
+from matplotlib.backends.backend_pdf import PdfPages
 
 def evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels):
     results = {}
@@ -118,7 +118,10 @@ def vidhyaProbabilityOutlier(mainClassifier, features):
 
 
 
-def featureImportance(X,y):
+def featureImportance():
+    trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
+    X = trainFeatures
+    y = trainLabels
     forest = ExtraTreesClassifier(n_estimators=2000,
                               random_state=0)
 
@@ -135,15 +138,19 @@ def featureImportance(X,y):
         print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
     # Plot the feature importances of the forest
     plt.figure()
-    plt.title("Top 20 Features by Importance")
+    axis_font = {'fontname':'Arial', 'size':'16'}
     plt.xlabel("(ENF Signal)-(Feature Index)")
     plt.ylabel("Relative Feature Importance")
-    plt.bar(range(X.shape[1]), importances[indices],
-           color="r", yerr=std[indices], align="center")
-    indices = [indexToENFFeatureNum[i] for i in indices]
-    plt.xticks(range(X.shape[1]), indices)
-    plt.xlim([-1, X.shape[1]])
-    plt.show()
+
+    plt.bar(range(10), importances[indices[0:10]],
+           color="r", yerr=std[indices[0:10]], align="center")
+    indices = [indexToENFFeatureNum[i] for i in indices[0:10]]
+    plt.xticks(range(10), indices[0:10])
+    plt.xlim([-1, 10])
+    #plt.show()
+    plt.savefig('feature_importance.eps')
+    #pp = PdfPages('featureImportance.pdf')
+    #pp.savefig(plt)
 
 def parameterSearch():
     trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
@@ -151,8 +158,7 @@ def parameterSearch():
 
     for i in xrange(10):
         clf = GridSearchCV(ExtraTreesClassifier(n_estimators=1000),
-                           param_grid={'bootstrap':[False],'min_samples_split':[1,2,3,4,5]},
-                           n_jobs=-1, cv=10)
+                           param_grid={'bootstrap':[False],'min_samples_split':[1,2,3,4,5]}, cv=10)
         clf.fit(trainFeatures,trainLabels)
 
         print clf.best_params_
@@ -184,9 +190,10 @@ def testENFChoices():
 
 def testPracticeSet():
     trainFeatures, trainLabels, testFeatures, testLabels,_,_ = helper.loadData('trainTestData.mat')
-    classifier = ExtraTreesClassifier(n_estimators=2000, n_jobs=-1)
+    classifier = ExtraTreesClassifier(n_estimators=2000, random_state=3)
     results = evaluate(classifier,trainFeatures,trainLabels,testFeatures,testLabels)
     print results
 
 if __name__ == '__main__':
-    testPracticeSet()
+    #testPracticeSet()
+    featureImportance()

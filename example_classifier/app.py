@@ -24,6 +24,7 @@ def writeResults(results, testFiles,outputFile='results.txt'):
 
     allResults = {}
     simpleResults = {}
+    tableResults = {}
     with open(outputFile,'wb') as fi:
         for i, label in enumerate(results['predicted']):
             filename = testFiles[i]
@@ -40,6 +41,7 @@ def writeResults(results, testFiles,outputFile='results.txt'):
 
             allResults[filenum] = "Test{0} {1} Confidence:{2}\n".format(filenum, predictedLabelChar, probability)
             simpleResults[filenum] = predictedLabelChar
+            tableResults[filenum] = "Test{0} & {1} & {2} \\\\\n".format(filenum, predictedLabelChar, probability)
 
         toWrite = sorted(list(allResults.iteritems()))
         for num, rowStr in toWrite:
@@ -49,10 +51,8 @@ def writeResults(results, testFiles,outputFile='results.txt'):
         toWrite = sorted(list(simpleResults.iteritems()))
         outputString = ''
         for _, label in toWrite:
-            outputString += label + '\n'
+            outputString += label
         fi.write(outputString)
-
-
 
 
 
@@ -62,7 +62,7 @@ if __name__=='__main__':
 
     print "Loaded Files...."
     testFiles = [x[0] for x in testFiles[0]]
-    clf = ExtraTreesClassifier(n_estimators=1000,n_jobs=-1,bootstrap=False)
+    clf = ExtraTreesClassifier(n_estimators=2000,bootstrap=False,random_state=3)
 
     print "Training Classifier..."
 
@@ -81,3 +81,4 @@ if __name__=='__main__':
     print "Writing Results to Results.txt"
     writeResults(results,testFiles,'Results.txt')
 
+    #['G0:9', 'G1:12', 'G2:7', 'G3:8', 'G4:9', 'G5:7', 'G6:9', 'G7:9', 'G8:14', 'G13:16']

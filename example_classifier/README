@@ -1,25 +1,33 @@
-WEIRD GROWNUPS
+TEAM NAME: WEIRD GROWNUPS
+University of New South Wales
+CONTACT: Jeremy Ma (jeremyma.cx@gmail.com)
+
 REQUIREMENTS
-1. MATLAB
-2. PYTHON 2.7 with scipy, numpy scikit learn
+1. MATLAB (tested with 2014b)
+2. PYTHON 2.7 with scipy, numpy, scikit learn
 installation instructions
 Download anaconda installer from 
 https://www.continuum.io/downloads
 (this will override the default installation of python)
 
+Any installation of python with the above requirements will work.
+See the below instructions for details.
 
 To verify dataset results...
-1. run mainAllHarmonics.m with the lines
-trainRecordings = getRecordings(*PATH TO TRAINING DATA HERE*);
-testRecordings = getRecordings(*PATH TO TESTING DATA HERE*);
-ensure the '/' at the end is included e.g
-testRecordings = getRecordings('../practice_data/');
+1. Run app.m
+Note:
+- The script expects a folder containing wav files in the following format e.g Test_1.wav... Practice_2.wav
+- Point the script towards this folder by editing the first line in app.m
+  testRecordings = getRecordings('Testing_dataset/'); EDIT THE PATH
+- We have pre-extracted the ENF signals from the training dataset and included them in our submission. To re-extract
+the enf, run extractTrainingENF.m and edit the following lines, it
+- app.m takes several minutes to run on the provided testing set.
+- edit the line [status,cmdout] = system('python app.py','-echo'); to use a different installation of python.
+e.g [status, cmdout] = system('C:\Users\Adrian\AppData\Local\Enthought\Canopy\User\Scripts\python app.py');
 
-2. run app.py in the same directory as the .m files
-From the command line
-python app.py
+For installation problems, bugs etc contact jeremyma.cx@gmail.com
 
-3. view file results.txt
+2. View file Results.txt for detailed results and SimpleResults.txt for a string of grid labels in ascending order of test number.
 
 
 
