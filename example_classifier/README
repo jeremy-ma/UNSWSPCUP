@@ -20,7 +20,8 @@ Note:
 - Point the script towards this folder by editing the first line in app.m
   testRecordings = getRecordings('Testing_dataset/'); EDIT THE PATH
 - We have pre-extracted the ENF signals from the training dataset and included them in our submission. To re-extract
-the enf, run extractTrainingENF.m and edit the following lines, it
+the enf, run extractTrainingENF.m and edit the following line trainRecordings = getRecordings('../training_data/')
+to point to the appropriate directory with the training data.
 - app.m takes several minutes to run on the provided testing set.
 - edit the line [status,cmdout] = system('python app.py','-echo'); to use a different installation of python.
 e.g [status, cmdout] = system('C:\Users\Adrian\AppData\Local\Enthought\Canopy\User\Scripts\python app.py');

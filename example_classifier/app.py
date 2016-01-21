@@ -70,7 +70,6 @@ if __name__=='__main__':
 
     sortedResults = sorted(zip(testFiles,results['predicted']))
 
-
     print "Outputting Predictions..."
     print sortedResults
     print sorted(results['predicted'])

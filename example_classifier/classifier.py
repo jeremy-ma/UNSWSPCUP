@@ -143,7 +143,7 @@ def featureImportance():
     plt.ylabel("Relative Feature Importance")
 
     plt.bar(range(10), importances[indices[0:10]],
-           color="r", yerr=std[indices[0:10]], align="center")
+           color="r", align="center")
     indices = [indexToENFFeatureNum[i] for i in indices[0:10]]
     plt.xticks(range(10), indices[0:10])
     plt.xlim([-1, 10])
@@ -195,5 +195,5 @@ def testPracticeSet():
     print results
 
 if __name__ == '__main__':
-    #testPracticeSet()
-    featureImportance()
+    testPracticeSet()
+    #featureImportance()
