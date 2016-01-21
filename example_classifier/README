@@ -21,7 +21,7 @@ Note:
   testRecordings = getRecordings('Testing_dataset/'); EDIT THE PATH
 - We have pre-extracted the ENF signals from the training dataset and included them in our submission. To re-extract
 the enf, run extractTrainingENF.m and edit the following line trainRecordings = getRecordings('../training_data/')
-to point to the appropriate directory with the training data.
+to point to the appropriate directory with the training data. This script can take 10-15 minutes to run.
 - app.m takes several minutes to run on the provided testing set.
 - edit the line [status,cmdout] = system('python app.py','-echo'); to use a different installation of python.
 e.g [status, cmdout] = system('C:\Users\Adrian\AppData\Local\Enthought\Canopy\User\Scripts\python app.py');
@@ -29,7 +29,5 @@ e.g [status, cmdout] = system('C:\Users\Adrian\AppData\Local\Enthought\Canopy\Us
 For installation problems, bugs etc contact jeremyma.cx@gmail.com
 
 2. View file Results.txt for detailed results and SimpleResults.txt for a string of grid labels in ascending order of test number.
-
-
 
 
